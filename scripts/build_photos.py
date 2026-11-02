@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Convert pics/<City>/* into web-ready JPEGs under photos/ and write photos.json.
+
+- Uses macOS `sips` for HEIC/JPEG decoding, resizing and rotation (no extra deps).
+- Orders photos by EXIF DateTimeOriginal, falling back to the file's metadata date.
+- Chapters are ordered by their earliest photo.
+- Strips all EXIF/XMP metadata (incl. GPS) from the published files.
+"""
+import json
+import struct
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "pics"
+OUT = ROOT / "photos"
+MAX_SIDE = 1600
+QUALITY = 78
+EXTS = {".heic", ".jpg", ".jpeg", ".png"}
+
+
+def read_exif(data):
+    """Return (orientation, DateTimeOriginal string or None) from JPEG bytes."""
+    i = 2
+    while i < len(data) - 4:
+        if data[i] != 0xFF:
+            break
+        marker = data[i + 1]
+        length = struct.unpack(">H", data[i + 2:i + 4])[0]
+        seg = data[i + 4:i + 2 + length]
+        if marker == 0xE1 and seg.startswith(b"Exif\0\0"):
+            return parse_tiff(seg[6:])
+        if marker == 0xDA:
+            break
+        i += 2 + length
+    return 1, None
+
+
+def parse_tiff(t):
+    end = "<" if t[:2] == b"II" else ">"
+
+    def ifd(offset):
+        n = struct.unpack(end + "H", t[offset:offset + 2])[0]
+        entries = {}
+        for k in range(n):
+            e = t[offset + 2 + 12 * k: offset + 14 + 12 * k]
+            tag, typ, count = struct.unpack(end + "HHI", e[:8])
+            entries[tag] = (typ, count, e[8:12])
+        return entries
+
+    def short(v):
+        return struct.unpack(end + "H", v[2][:2])[0]
+
+    def long_(v):
+        return struct.unpack(end + "I", v[2])[0]
+
+    ifd0 = ifd(struct.unpack(end + "I", t[4:8])[0])
+    orientation = short(ifd0[0x0112]) if 0x0112 in ifd0 else 1
+    taken = None
+    if 0x8769 in ifd0:
+        exif = ifd(long_(ifd0[0x8769]))
+        if 0x9003 in exif:
+            off = long_(exif[0x9003])
+            taken = t[off:off + 19].decode("ascii", "ignore")
+    return orientation, taken
+
+
+def jpeg_size(data):
+    i = 2
+    while i < len(data):
+        marker = data[i + 1]
+        length = struct.unpack(">H", data[i + 2:i + 4])[0]
+        if marker in (0xC0, 0xC1, 0xC2):
+            h, w = struct.unpack(">HH", data[i + 5:i + 9])
+            return w, h
+        i += 2 + length
+    raise ValueError("no SOF marker")
+
+
+def strip_metadata(data):
+    """Drop APP1..APP15 segments (EXIF, XMP, ...) but keep APP0 and the image."""
+    out = bytearray(data[:2])
+    i = 2
+    while i < len(data):
+        marker = data[i + 1]
+        if marker == 0xDA:
+            out += data[i:]
+            break
+        length = struct.unpack(">H", data[i + 2:i + 4])[0]
+        if not (0xE1 <= marker <= 0xEF):
+            out += data[i:i + 2 + length]
+        i += 2 + length
+    return bytes(out)
+
+
+ROTATIONS = {3: ["-r", "180"], 6: ["-r", "90"], 8: ["-r", "270"],
+             2: ["-f", "horizontal"], 4: ["-f", "vertical"],
+             5: ["-r", "90", "-f", "horizontal"], 7: ["-r", "270", "-f", "horizontal"]}
+
+
+def sips(*args):
+    subprocess.run(["sips", *args], check=True, capture_output=True)
+
+
+def metadata_date(path):
+    raw = subprocess.run(["mdls", "-raw", "-name", "kMDItemContentCreationDate", str(path)],
+                         capture_output=True, text=True).stdout.strip()
+    return datetime.strptime(raw, "%Y-%m-%d %H:%M:%S %z").replace(tzinfo=None)
+
+
+def main():
+    OUT.mkdir(exist_ok=True)
+    for old in OUT.glob("*.jpg"):
+        old.unlink()
+
+    chapters = []
+    for city_dir in sorted(p for p in SRC.iterdir() if p.is_dir()):
+        photos = []
+        for src in sorted(city_dir.iterdir()):
+            if src.suffix.lower() not in EXTS:
+                continue
+            dest = OUT / f"{city_dir.name.lower()}-{src.stem}.jpg"
+            sips("-s", "format", "jpeg", "-s", "formatOptions", str(QUALITY),
+                 "-Z", str(MAX_SIDE), str(src), "--out", str(dest))
+            orientation, taken = read_exif(dest.read_bytes())
+            if orientation in ROTATIONS:
+                sips(*ROTATIONS[orientation], str(dest))
+            data = strip_metadata(dest.read_bytes())
+            dest.write_bytes(data)
+            w, h = jpeg_size(data)
+            if taken:
+                when, exact = datetime.strptime(taken, "%Y:%m:%d %H:%M:%S"), True
+            else:
+                when, exact = metadata_date(src), False
+            photos.append({"src": f"photos/{dest.name}", "w": w, "h": h,
+                           "taken": when.isoformat(), "exact": exact})
+            print(f"  {src.relative_to(SRC)} -> {dest.name} {w}x{h} {when} "
+                  f"{'' if exact else '(no EXIF date)'}", file=sys.stderr)
+        photos.sort(key=lambda p: p["taken"])
+        chapters.append({"city": city_dir.name, "photos": photos})
+
+    chapters.sort(key=lambda c: c["photos"][0]["taken"])
+    (ROOT / "photos.json").write_text(json.dumps({"chapters": chapters}, indent=1))
+    print(f"wrote {sum(len(c['photos']) for c in chapters)} photos in "
+          f"{len(chapters)} chapters: {[c['city'] for c in chapters]}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()

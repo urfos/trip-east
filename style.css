@@ -1,0 +1,242 @@
+:root {
+  --bg: #2b2622;
+  --paper: #f6f1e7;
+  --paper-edge: #e7dfcf;
+  --ink: #2e2a25;
+  --ink-soft: #7a7064;
+  --cover: #5a2e2a;
+  --cover-ink: #f1e4c8;
+  --page-w: 420px;
+  --page-h: 560px;
+  --turn: 0.9s;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: radial-gradient(ellipse at center, #3a332d 0%, var(--bg) 70%);
+  color: var(--ink);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  overflow: hidden;
+}
+
+.stage {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px;
+}
+
+.book-wrap {
+  perspective: 2600px;
+}
+
+/* The book is a two-page spread; leaves sit on the right half and turn around the spine. */
+.book {
+  position: relative;
+  width: calc(var(--page-w) * 2);
+  height: var(--page-h);
+  transform-style: preserve-3d;
+  transition: transform var(--turn) ease;
+  font-size: calc(16px * var(--content-scale, 1));
+}
+.book.closed-front { transform: translateX(calc(var(--page-w) * -0.5)); }
+.book.closed-back  { transform: translateX(calc(var(--page-w) * 0.5)); }
+
+.leaf {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--page-w);
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform var(--turn) cubic-bezier(.45, .05, .35, 1);
+  cursor: pointer;
+}
+.leaf.flipped { transform: rotateY(-180deg); }
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--paper);
+  overflow: hidden;
+}
+.face.back { transform: rotateY(180deg); }
+
+/* Paper shading: darker towards the spine. */
+.face.front {
+  border-radius: 0 6px 6px 0;
+  box-shadow: inset 18px 0 30px -18px rgba(0,0,0,.35), 2px 3px 12px rgba(0,0,0,.35);
+}
+.face.back {
+  border-radius: 6px 0 0 6px;
+  box-shadow: inset -18px 0 30px -18px rgba(0,0,0,.35), -2px 3px 12px rgba(0,0,0,.35);
+}
+
+/* Shadow that sweeps across a page while it turns. */
+.face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity calc(var(--turn) / 2) ease;
+}
+.face.front::after { background: linear-gradient(to left, rgba(0,0,0,.25), transparent 60%); }
+.face.back::after  { background: linear-gradient(to right, rgba(0,0,0,.25), transparent 60%); }
+.leaf.turning .face::after { opacity: 1; }
+
+/* ---------- Page content ---------- */
+
+.photo-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2.125em 1.875em 1.375em;
+  gap: 0.75em;
+}
+.photo-page img {
+  max-width: 100%;
+  max-height: calc(100% - 1.875em);
+  width: auto;
+  height: auto;
+  background: var(--paper-edge);
+  box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0.375em 0.875em rgba(0,0,0,.18);
+  border: 0.375em solid #fff;
+}
+.caption {
+  font-style: italic;
+  font-size: 0.9375em;
+  color: var(--ink-soft);
+  min-height: 1em;
+}
+.folio {
+  position: absolute;
+  bottom: 0.625em;
+  font-size: 0.75em;
+  color: var(--ink-soft);
+}
+.front .folio { right: 1.125em; }
+.back .folio  { left: 1.125em; }
+
+.chapter-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2.5em;
+}
+.chapter-page .num {
+  font-size: 1em;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.chapter-page h2 {
+  font-size: 4em;
+  font-weight: 400;
+  margin: 0.28em 0 0.16em;
+  line-height: 1;
+}
+.chapter-page .rule {
+  width: 3.75em;
+  height: 1px;
+  background: var(--ink-soft);
+  margin: 0.375em 0 0.875em;
+}
+.chapter-page .dates {
+  font-style: italic;
+  font-size: 1.125em;
+  color: var(--ink-soft);
+}
+
+.cover {
+  background: var(--cover);
+  color: var(--cover-ink);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2.5em;
+  border: 0.625em solid transparent;
+  outline: 1px solid rgba(241,228,200,.4);
+  outline-offset: -1.375em;
+}
+.cover h1 {
+  font-size: 4.5em;
+  font-weight: 400;
+  margin: 0 0 0.17em;
+  letter-spacing: .04em;
+}
+.cover p {
+  margin: 0;
+  font-style: italic;
+  font-size: 1.25em;
+  opacity: .85;
+}
+.cover .hint {
+  margin-top: 3em;
+  font-size: 0.875em;
+  font-style: normal;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  opacity: .6;
+}
+.face.is-cover { background: var(--cover); }
+
+.blank-page {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 1.125em;
+}
+
+/* ---------- Controls ---------- */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #d9cdb8;
+}
+.controls button {
+  font: inherit;
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(217,205,184,.4);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background .2s;
+}
+.controls button:hover:not(:disabled) { background: rgba(217,205,184,.12); }
+.controls button:disabled { opacity: .3; cursor: default; }
+.where {
+  min-width: 160px;
+  text-align: center;
+  font-style: italic;
+  font-size: 17px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --turn: 0.01s; }
+}
