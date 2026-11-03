@@ -1,3 +1,5 @@
 pics/
 .DS_Store
 __pycache__/
+photos-local/
+photos.local.json

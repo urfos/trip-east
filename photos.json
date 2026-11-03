@@ -4,58 +4,58 @@
    "city": "Lausanne",
    "photos": [
     {
-     "src": "photos/lausanne-IMG_6462.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/lausanne-01.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-17T18:59:07",
      "exact": true
     },
     {
-     "src": "photos/lausanne-IMG_6481.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/lausanne-02.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-19T15:51:40",
      "exact": true
     },
     {
-     "src": "photos/lausanne-IMG_6485.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/lausanne-03.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-19T16:11:56",
      "exact": true
     },
     {
-     "src": "photos/lausanne-IMG_6509.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/lausanne-04.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-20T15:15:45",
      "exact": true
     },
     {
-     "src": "photos/lausanne-IMG_6515.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/lausanne-05.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-20T15:45:21",
      "exact": true
     },
     {
-     "src": "photos/lausanne-IMG_6521.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/lausanne-06.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-20T15:53:35",
      "exact": true
     },
     {
-     "src": "photos/lausanne-IMG_6524.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/lausanne-07.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-20T16:06:38",
      "exact": true
     },
     {
-     "src": "photos/lausanne-IMG_6547.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/lausanne-08.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-21T12:40:24",
      "exact": true
     }
@@ -65,72 +65,72 @@
    "city": "Weissdorf",
    "photos": [
     {
-     "src": "photos/weissdorf-IMG_6564.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/weissdorf-01.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-21T23:01:16",
      "exact": true
     },
     {
-     "src": "photos/weissdorf-IMG_6571.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/weissdorf-02.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-22T12:36:36",
      "exact": true
     },
     {
-     "src": "photos/weissdorf-IMG_6575.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/weissdorf-03.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-23T15:36:34",
      "exact": true
     },
     {
-     "src": "photos/weissdorf-IMG_6577.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/weissdorf-04.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-23T16:45:28",
      "exact": true
     },
     {
-     "src": "photos/weissdorf-IMG_6578.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/weissdorf-05.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-23T16:45:37",
      "exact": true
     },
     {
-     "src": "photos/weissdorf-photo_2026-11-02_01-24-16.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/weissdorf-06.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-11-02T00:24:16",
      "exact": false
     },
     {
-     "src": "photos/weissdorf-IMG_6692.jpg",
-     "w": 1600,
-     "h": 1600,
+     "src": "photos/weissdorf-07.svg",
+     "w": 400,
+     "h": 400,
      "taken": "2026-11-02T01:50:24",
      "exact": false
     },
     {
-     "src": "photos/weissdorf-IMG_6693.jpg",
-     "w": 1600,
-     "h": 1600,
+     "src": "photos/weissdorf-08.svg",
+     "w": 400,
+     "h": 400,
      "taken": "2026-11-02T01:50:34",
      "exact": false
     },
     {
-     "src": "photos/weissdorf-IMG_6694.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/weissdorf-09.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-11-02T01:50:42",
      "exact": false
     },
     {
-     "src": "photos/weissdorf-IMG_6695.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/weissdorf-10.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-11-02T01:50:56",
      "exact": false
     }
@@ -140,86 +140,86 @@
    "city": "Prague",
    "photos": [
     {
-     "src": "photos/prague-IMG_6594.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/prague-01.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-24T13:08:57",
      "exact": true
     },
     {
-     "src": "photos/prague-IMG_6603.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/prague-02.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-24T16:08:20",
      "exact": true
     },
     {
-     "src": "photos/prague-IMG_6607.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/prague-03.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-24T18:29:30",
      "exact": true
     },
     {
-     "src": "photos/prague-IMG_6626.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/prague-04.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-25T17:45:41",
      "exact": true
     },
     {
-     "src": "photos/prague-IMG_6633.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/prague-05.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-25T18:20:35",
      "exact": true
     },
     {
-     "src": "photos/prague-IMG_6638.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/prague-06.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-10-25T18:58:14",
      "exact": true
     },
     {
-     "src": "photos/prague-IMG_6656.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/prague-07.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-26T13:47:14",
      "exact": true
     },
     {
-     "src": "photos/prague-57185399-a88d-41ef-9f43-cc788575cbfa.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/prague-08.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-26T20:19:25",
      "exact": true
     },
     {
-     "src": "photos/prague-65fabd69-2a0d-423c-b5b3-98190808fde8.jpg",
-     "w": 1200,
-     "h": 1600,
+     "src": "photos/prague-09.svg",
+     "w": 300,
+     "h": 400,
      "taken": "2026-10-26T20:19:25",
      "exact": true
     },
     {
-     "src": "photos/prague-photo_2026-11-02_01-22-49.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/prague-10.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-11-02T00:23:41",
      "exact": false
     },
     {
-     "src": "photos/prague-photo_2026-11-02_01-24-23.jpg",
-     "w": 1600,
-     "h": 1265,
+     "src": "photos/prague-11.svg",
+     "w": 400,
+     "h": 316,
      "taken": "2026-11-02T00:24:23",
      "exact": false
     },
     {
-     "src": "photos/prague-photo_2026-11-02_01-24-24.jpg",
-     "w": 1600,
-     "h": 1200,
+     "src": "photos/prague-12.svg",
+     "w": 400,
+     "h": 300,
      "taken": "2026-11-02T00:24:24",
      "exact": false
     }

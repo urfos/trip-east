@@ -6,7 +6,16 @@
   const TURN_MS = 900;
   const PRELOAD = 2; // leaves around the current spread whose images get loaded
 
-  const { chapters } = await (await fetch("photos.json")).json();
+  // photos.local.json (gitignored) holds the real photos and wins when present;
+  // the published site only has the placeholder photos.json.
+  async function loadManifest() {
+    try {
+      const local = await fetch("photos.local.json");
+      if (local.ok) return await local.json();
+    } catch (e) {}
+    return (await fetch("photos.json")).json();
+  }
+  const { chapters } = await loadManifest();
 
   // ---------- Build the sequence of page faces ----------
   // Faces alternate right (front of a leaf) / left (back of a leaf).
