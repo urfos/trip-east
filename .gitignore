@@ -3,3 +3,4 @@ pics/
 __pycache__/
 photos-local/
 photos.local.json
+.cache/

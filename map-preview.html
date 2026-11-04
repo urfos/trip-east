@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Trip East: map preview</title>
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  body { display: flex; flex-direction: column; }
+  nav { padding: 8px; display: flex; gap: 8px; align-items: center; background: #fff; }
+  nav button { padding: 6px 12px; font: inherit; }
+  svg { flex: 1; min-height: 0; width: 100%; background: #a9d4ef; touch-action: none; cursor: grab; }
+  .country { fill: #e4e0d0; stroke: #9a8f70; stroke-width: .8; stroke-linejoin: round; }
+  .route { fill: none; stroke-width: 3; stroke-dasharray: 8 5; stroke-linecap: round; }
+  .route.bus { stroke: #d33; }
+  .route.train { stroke: #36c; }
+  .city circle { fill: #222; }
+  .city text { font-size: 24px; paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+</style>
+</head>
+<body>
+<nav>
+  <button data-view="full">Europe</button>
+  <button data-view="route">Trip</button>
+  <span>drag to pan, wheel / pinch to zoom</span>
+</nav>
+<svg id="map"></svg>
+<script>
+(async function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const map = await (await fetch("map.json")).json();
+  const svg = document.getElementById("map");
+  const el = (name, attrs, parent) => {
+    const n = document.createElementNS(NS, name);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    parent.appendChild(n);
+    return n;
+  };
+
+  const trip = new Set(map.routes.flatMap((r) => [r.from, r.to]));
+  map.countries.forEach((c) => el("path", { d: c.d, class: "country" }, svg));
+  map.routes.forEach((r) => el("path", { d: r.d, class: "route " + r.mode }, svg));
+  map.landmarks.forEach((m) => el("image", {
+    href: m.file, x: m.x - m.w / 2, y: m.y - m.h, width: m.w, height: m.h,
+  }, svg));
+  Object.values(map.cities).forEach((c) => {
+    const g = el("g", { class: "city" }, svg);
+    el("circle", { cx: c.x, cy: c.y, r: 6 }, g);
+    el("text", { x: c.x, y: c.y + 30, "text-anchor": "middle" }, g).textContent = c.name;
+  });
+
+  const cities = Object.values(map.cities).filter((c) => trip.has(c.name));
+  const xs = cities.map((c) => c.x), ys = cities.map((c) => c.y);
+  const pad = 120;
+  const views = {
+    full: [0, 0, map.width, map.height],
+    route: [Math.min(...xs) - pad, Math.min(...ys) - pad,
+            Math.max(...xs) - Math.min(...xs) + 2 * pad, Math.max(...ys) - Math.min(...ys) + 2 * pad],
+  };
+  let vb = views.route.slice();
+  const apply = () => svg.setAttribute("viewBox", vb.join(" "));
+  apply();
+  document.querySelectorAll("nav button").forEach((b) =>
+    b.addEventListener("click", () => { vb = views[b.dataset.view].slice(); apply(); }));
+
+  function zoomAt(clientX, clientY, factor) {
+    const r = svg.getBoundingClientRect();
+    const scale = Math.max(vb[2] / r.width, vb[3] / r.height); // preserveAspectRatio: meet
+    const ox = (r.width - vb[2] / scale) / 2, oy = (r.height - vb[3] / scale) / 2;
+    const mx = vb[0] + (clientX - r.left - ox) * scale, my = vb[1] + (clientY - r.top - oy) * scale;
+    vb = [mx - (mx - vb[0]) * factor, my - (my - vb[1]) * factor, vb[2] * factor, vb[3] * factor];
+    apply();
+  }
+  svg.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    zoomAt(e.clientX, e.clientY, Math.exp(e.deltaY * 0.0015));
+  }, { passive: false });
+
+  const pointers = new Map();
+  let pinch = 0;
+  svg.addEventListener("pointerdown", (e) => { svg.setPointerCapture(e.pointerId); pointers.set(e.pointerId, e); });
+  svg.addEventListener("pointerup", (e) => { pointers.delete(e.pointerId); pinch = 0; });
+  svg.addEventListener("pointermove", (e) => {
+    const prev = pointers.get(e.pointerId);
+    if (!prev) return;
+    pointers.set(e.pointerId, e);
+    const r = svg.getBoundingClientRect();
+    const scale = Math.max(vb[2] / r.width, vb[3] / r.height);
+    if (pointers.size === 1) {
+      vb[0] -= (e.clientX - prev.clientX) * scale;
+      vb[1] -= (e.clientY - prev.clientY) * scale;
+      apply();
+    } else if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      if (pinch) zoomAt((a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2, pinch / dist);
+      pinch = dist;
+    }
+  });
+})();
+</script>
+</body>
+</html>
