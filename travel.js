@@ -207,20 +207,23 @@
       if (o.snap) snapCamera();
     }
 
-    // Drives the active vehicle along the leg; resolves on arrival.
-    function travelLeg(leg) {
+    // Drives the active vehicle along the leg; resolves on arrival. With `midway` (an async
+    // function) the vehicle eases to a stop halfway, waits for it, then drives on.
+    function travelLeg(leg, midway) {
       show(leg);
       const seconds = clamp(routes[leg].length / SPEED, MIN_SECONDS, MAX_SECONDS);
-      return new Promise((resolve) => {
+      const drive = (from, to, secs) => new Promise((resolve) => {
         let t0 = null;
         function step(now) {
           if (t0 === null) t0 = now;
-          const t = Math.min(1, (now - t0) / (seconds * 1000));
-          p = ease(t);
+          const t = Math.min(1, (now - t0) / (secs * 1000));
+          p = from + (to - from) * ease(t);
           if (t < 1) requestAnimationFrame(step); else resolve();
         }
         requestAnimationFrame(step);
       });
+      if (!midway) return drive(0, 1, seconds);
+      return drive(0, 0.5, seconds / 2).then(midway).then(() => drive(0.5, 1, seconds / 2));
     }
 
     const ready = Promise.all(vehicles.map((v) => v.ready));

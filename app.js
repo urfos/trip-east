@@ -1,7 +1,9 @@
 // Trip East: tap to travel Paris -> Lausanne -> Weisendorf -> Prague.
-// Each leg: close-up on the passengers, drive, zoom out to the map, then the city's photos open.
+// Each leg: close-up on the passengers, drive (stopping halfway for the road photo, if any),
+// zoom out to the map, then the city's photos open.
 // Debug hashes: #at=N (parked in city N), #leg=N&t=0.5 (partway through a leg), #view=overview,
-// #photos=N (open the viewer for city N), #public (cartoon heads even if avatars-local/ exists).
+// #photos=N (open the viewer for city N), #road=N (the road photo of leg N),
+// #public (cartoon heads even if avatars-local/ exists).
 (async function () {
   const stage = document.getElementById("stage");
   const hud = document.getElementById("hud");
@@ -24,9 +26,11 @@
     loadManifest(),
   ]);
   const photosOf = (city) => (manifest.chapters.find((c) => c.city === city) || { photos: [] }).photos;
+  const roadOf = (from, to) => (manifest.roads || []).find((r) => r.from === from && r.to === to);
 
   const travel = TripTravel.createTravel(stage, map, { publicOnly: hash.has("public") });
   const viewer = TripViewer.create(document.getElementById("viewer"));
+  const popup = TripViewer.createPopup(document.getElementById("road-photo"));
   await travel.ready;
 
   let at = 0;              // index of the city the vehicle is in
@@ -43,6 +47,18 @@
     if (photos.length) await viewer.open(city, photos);
   }
 
+  // The midway stop of a leg: shows the road photo until tapped. Undefined when there is none.
+  function roadStop(leg) {
+    const road = roadOf(travel.cities[leg], travel.cities[leg + 1]);
+    if (!road) return undefined;
+    new Image().src = road.photo.src; // preload, so the photo pops up without a blank card
+    return async () => {
+      say("Tap to continue", true);
+      await popup.show(road.photo, `${road.from} → ${road.to}`);
+      say("");
+    };
+  }
+
   async function advance() {
     if (busy || viewer.isOpen()) return;
     busy = true;
@@ -50,7 +66,7 @@
     if (at >= travel.legCount) at = 0;
     travel.show(at);
     if (zoomedOut) { await travel.setCamera("follow"); zoomedOut = false; }
-    await travel.travelLeg(at);
+    await travel.travelLeg(at, roadStop(at));
     at++;
     await travel.setCamera("overview");
     zoomedOut = true;
@@ -59,7 +75,13 @@
     idle();
   }
 
-  if (hash.has("leg")) {
+  if (hash.has("road")) {
+    const leg = +hash.get("road");
+    travel.setState(leg, 0.5);
+    busy = true;
+    const stop = roadStop(leg);
+    if (stop) stop();
+  } else if (hash.has("leg")) {
     travel.setState(+hash.get("leg"), +(hash.get("t") || 0));
     busy = true;
   } else if (hash.has("at")) {

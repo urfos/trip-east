@@ -21,7 +21,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; font-family: system-ui, 
 .hud {
   position: fixed; left: 0; right: 0; bottom: 0; padding: 16px 12px 22px; text-align: center;
   font-size: 20px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .6);
-  pointer-events: none; user-select: none;
+  pointer-events: none; user-select: none; z-index: 6; /* above the road photo, below the viewer */
 }
 .hud .pulse { animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .55; } }

@@ -40,7 +40,7 @@ The repo and the site are public, and the trip shows family members and children
 | `travel.js` | Draws the map, the routes, landmarks and city labels; drives the vehicles; moves the camera. | Yes |
 | `vehicles.js` | Side-view bus and train (locomotive plus cars) with the passengers in the windows. | Yes |
 | `characters.js` | The four characters: SVG bodies with a photo head. Heights, colours and head placement are in `CHARACTERS`. | Yes |
-| `viewer.js` | Full-screen photo viewer: one photo at a time, buttons, arrow keys, swipe, Escape. | Yes |
+| `viewer.js` | Full-screen photo viewer (one photo at a time, buttons, arrow keys, swipe, Escape) and the road photo pop-up. | Yes |
 | `travel.css`, `characters.css`, `viewer.css` | Styles for the map, the characters' idle animation and the viewer. | Yes |
 | `map.json` | Countries, cities, routes and landmark positions in SVG units. | **No.** Regenerate. |
 | `assets/landmarks/*.svg`, `assets/flags/*.svg` | Cartoon landmarks and flags. | Yes |
@@ -94,7 +94,7 @@ The structure of `photos.local.json` (and `photos.json`) is:
 ### Flow (`app.js`)
 `at` is the index of the city the vehicle is parked in (0 = Paris). A tap anywhere (not on a button) or a key press calls `advance()`:
 1. The camera goes back to following the vehicle if it is zoomed out.
-2. `travel.travelLeg(at)` drives the leg. It starts with a close-up on the passengers.
+2. `travel.travelLeg(at, roadStop(at))` drives the leg. It starts with a close-up on the passengers. If the leg has a road photo, the drive is two eased halves: the vehicle slows to a stop at the midpoint, the photo pops up as a tilted card (`TripViewer.createPopup`), and a tap or key press closes it and the vehicle drives on. Input in the card's first 400 ms is ignored, so a stray tap doesn't close it unseen.
 3. `at++`, and the camera zooms out to show the whole trip.
 4. The arrival town's photos open in the viewer. `advance()` waits until the viewer is closed.
 
@@ -113,7 +113,7 @@ The structure of `photos.local.json` (and `photos.json`) is:
 - Characters bob, sway their heads and swing their arms with CSS animations (`characters.css`). The animations are off under `prefers-reduced-motion`.
 
 ### Photo viewer (`viewer.js`)
-`TripViewer.create(root)` returns `{ open(city, photos), close(), isOpen() }`. `open()` returns a promise that resolves when the viewer closes (Back to map button or Escape). It preloads the next and previous photos.
+`TripViewer.create(root)` returns `{ open(city, photos), close(), isOpen() }`. `open()` returns a promise that resolves when the viewer closes: the Back to map button, Escape, or "next" on the last photo (the › button, → key or a left swipe). Changing photos slides the old one out and the new one in from the side (Web Animations API, skipped under `prefers-reduced-motion`). Each change bumps a `swap` counter, so quick taps skip straight to the latest photo instead of queueing. It preloads the next and previous photos.
 
 ### Debug URL hashes
 | Hash | Effect |
@@ -122,6 +122,7 @@ The structure of `photos.local.json` (and `photos.json`) is:
 | `#leg=N&t=0.5` | Freeze partway through leg N |
 | `#view=overview` | Start zoomed out |
 | `#photos=N` | Open the viewer for city N |
+| `#road=N` | Stop halfway through leg N and show its road photo |
 | `#public` | Use the cartoon heads even if `avatars-local/` exists |
 
 Hashes can be combined, e.g. `#at=2&view=overview`.
@@ -142,7 +143,7 @@ Hashes can be combined, e.g. `#at=2&view=overview`.
   --hide-scrollbars --window-size=1400,850 --virtual-time-budget=6000 \
   --screenshot=out.png "http://localhost:8000/#leg=1&t=0.5"
 ```
-Headless Chrome will not make the window narrower than about 500px, so it cannot show true phone widths. CSS fades (such as the viewer's) may be captured half-way.
+Headless Chrome will not make the window narrower than about 500px, so it cannot show true phone widths. With `--virtual-time-budget`, CSS transitions and Web Animations do not run to the end: fades are captured half-way, and the viewer never swaps to the next photo. Add `--force-prefers-reduced-motion` to see final states. To test timing-dependent behaviour, run headless Chrome in real time with `--remote-debugging-port` (which keeps it open) and have the test page `fetch()` its results to a local server.
 
 ## Gotchas
 - **Privacy:** keep the metadata removal in `index_photos.py`, and keep `<meta name="robots" content="noindex, nofollow">` in `index.html` and the preview pages.
@@ -157,5 +158,5 @@ Headless Chrome will not make the window narrower than about 500px, so it cannot
 - [x] Bus → train → bus, with the right passengers on each leg
 - [x] Tap or key press to drive a leg
 - [x] Town photos one by one on arrival, with Back to map
-- [ ] One photo per road: the vehicle pauses midway, the photo pops up, and a tap closes it and the trip continues
+- [x] One photo per road: the vehicle pauses midway, the photo pops up, and a tap closes it and the trip continues
 - [ ] Music for each town and for the road, with a 1.5 s fade in and fade out (local only: `audio/Lausanne.mp3`, `Weisendorf.mp3`, `Prague.mp3`, `road.mp3`)
