@@ -38,8 +38,9 @@ def svg(w, h, fill, label):
 
 def main():
     if not SOURCE.exists():
-        sys.exit(f"{SOURCE.name} not found: run scripts/build_photos.py first.")
-    chapters = json.loads(SOURCE.read_text())["chapters"]
+        sys.exit(f"{SOURCE.name} not found: run scripts/index_photos.py first.")
+    source = json.loads(SOURCE.read_text())
+    chapters = source["chapters"]
 
     OUT.mkdir(exist_ok=True)
     for old in OUT.glob("*.svg"):
@@ -58,8 +59,19 @@ def main():
             n += 1
         out_chapters.append({"city": ch["city"], "photos": photos})
 
-    MANIFEST.write_text(json.dumps({"chapters": out_chapters}, indent=1))
-    print(f"wrote {n} placeholders in {len(out_chapters)} chapters", file=sys.stderr)
+    out_roads = []
+    for road in source.get("roads", []):
+        p = road["photo"]
+        name = f"{road['from'].lower()}-to-{road['to'].lower()}.svg"
+        w, h = p["w"] // SIZE_DIV, p["h"] // SIZE_DIV
+        (OUT / name).write_text(svg(w, h, color(n), f"{road['from']} → {road['to']}"))
+        out_roads.append({"from": road["from"], "to": road["to"], "photo": {
+            "src": f"photos/{name}", "w": w, "h": h, "taken": p["taken"], "exact": p["exact"]}})
+        n += 1
+
+    MANIFEST.write_text(json.dumps({"chapters": out_chapters, "roads": out_roads}, indent=1))
+    print(f"wrote {n} placeholders in {len(out_chapters)} chapters "
+          f"and {len(out_roads)} roads", file=sys.stderr)
 
 
 if __name__ == "__main__":

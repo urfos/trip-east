@@ -2,25 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Trip East</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="characters.css">
+  <link rel="stylesheet" href="travel.css">
+  <link rel="stylesheet" href="viewer.css">
 </head>
 <body>
-  <main class="stage">
-    <div class="book-wrap">
-      <div class="book" id="book" aria-live="polite"></div>
+  <svg id="stage" role="img" aria-label="Map of Europe with the trip route"></svg>
+  <div class="hud" id="hud" aria-live="polite"></div>
+  <div class="credit">Map: Natural Earth</div>
+
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Photos" hidden>
+    <header class="viewer-bar">
+      <button class="viewer-back" type="button">&larr; Back to map</button>
+      <div class="viewer-title"><span class="viewer-city"></span><span class="viewer-count"></span></div>
+    </header>
+    <div class="viewer-stage">
+      <button class="viewer-nav prev" type="button" aria-label="Previous photo">&lsaquo;</button>
+      <img class="viewer-img" alt="">
+      <button class="viewer-nav next" type="button" aria-label="Next photo">&rsaquo;</button>
     </div>
-    <nav class="controls">
-      <button id="prev" aria-label="Previous page">&larr;</button>
-      <span id="where" class="where"></span>
-      <button id="next" aria-label="Next page">&rarr;</button>
-    </nav>
-  </main>
-  <script src="album.js"></script>
+    <p class="viewer-caption"></p>
+  </div>
+
+  <script src="characters.js"></script>
+  <script src="vehicles.js"></script>
+  <script src="travel.js"></script>
+  <script src="viewer.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

@@ -26,3 +26,8 @@ html, body { margin: 0; height: 100%; overflow: hidden; font-family: system-ui, 
 .hud .pulse { animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .55; } }
 @media (prefers-reduced-motion: reduce) { .hud .pulse { animation: none; } }
+
+.credit {
+  position: fixed; right: 8px; bottom: 4px; font-size: 11px; color: rgba(0, 0, 0, .5);
+  pointer-events: none; user-select: none;
+}
