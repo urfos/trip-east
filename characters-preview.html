@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Trip East: characters preview</title>
+<link rel="stylesheet" href="characters.css">
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  body { display: flex; flex-direction: column; }
+  nav { padding: 8px; display: flex; gap: 8px; align-items: center; }
+  nav button { padding: 6px 12px; font: inherit; }
+  svg { flex: 1; min-height: 0; width: 100%; background: #bfe0f5; }
+  .ground { stroke: #5b7a4a; stroke-width: 2; }
+  .ruler { stroke: #fff; stroke-width: .6; stroke-dasharray: 3 2; }
+  .ruler-label { font-size: 5px; fill: #35506a; }
+  .name { font-size: 6px; text-anchor: middle; fill: #2b2b33; }
+</style>
+</head>
+<body>
+<nav>
+  <button id="toggle-heads">Heads: real (local)</button>
+  <button id="toggle-motion">Motion: on</button>
+  <span>dashed lines: heights 100, 110 and 75</span>
+</nav>
+<svg id="stage" viewBox="-20 -135 200 150"></svg>
+<script src="characters.js"></script>
+<script>
+(function () {
+  const { CHARACTERS, BASE_HEIGHT, createCharacter } = TripCharacters;
+  const NS = "http://www.w3.org/2000/svg";
+  const stage = document.getElementById("stage");
+  const order = ["ilya", "masha", "iero", "lada"];
+  let publicOnly = location.hash === "#public";
+  document.getElementById("toggle-heads").textContent =
+    publicOnly ? "Heads: cartoon (public)" : "Heads: real (local)";
+
+  function draw() {
+    stage.replaceChildren();
+    const add = (name, attrs, text) => {
+      const n = document.createElementNS(NS, name);
+      for (const k in attrs) n.setAttribute(k, attrs[k]);
+      if (text) n.textContent = text;
+      stage.appendChild(n);
+      return n;
+    };
+    add("line", { x1: -20, x2: 180, y1: 0, y2: 0, class: "ground" });
+    [100, 110, 75].forEach((h) => {
+      add("line", { x1: -20, x2: 180, y1: -h, y2: -h, class: "ruler" });
+      add("text", { x: -18, y: -h - 1.5, class: "ruler-label" }, String(h));
+    });
+    order.forEach((id, i) => {
+      const x = 15 + i * 45;
+      const ch = createCharacter(id, { publicOnly, delay: -i * 0.3 });
+      ch.setAttribute("transform", `translate(${x} 0)`);
+      stage.appendChild(ch);
+      add("text", { x, y: 9, class: "name" },
+          `${CHARACTERS[id].name} ${Math.round(CHARACTERS[id].height * BASE_HEIGHT)}`);
+    });
+  }
+
+  document.getElementById("toggle-heads").addEventListener("click", (e) => {
+    publicOnly = !publicOnly;
+    e.target.textContent = publicOnly ? "Heads: cartoon (public)" : "Heads: real (local)";
+    draw();
+  });
+  document.getElementById("toggle-motion").addEventListener("click", (e) => {
+    const still = stage.classList.toggle("c-still");
+    e.target.textContent = still ? "Motion: off" : "Motion: on";
+  });
+  draw();
+})();
+</script>
+</body>
+</html>
