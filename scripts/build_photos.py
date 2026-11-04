@@ -26,6 +26,7 @@ MANIFEST = ROOT / "photos.local.json"
 MAX_SIDE = 1600
 QUALITY = 78
 EXTS = {".heic", ".jpg", ".jpeg", ".png"}
+NON_CITY_DIRS = {"avatars"}  # sub-folders of pics/ that are not chapters
 
 
 def read_exif(data):
@@ -123,7 +124,7 @@ def main():
         old.unlink()
 
     chapters = []
-    for city_dir in sorted(p for p in SRC.iterdir() if p.is_dir()):
+    for city_dir in sorted(p for p in SRC.iterdir() if p.is_dir() and p.name not in NON_CITY_DIRS):
         photos = []
         for src in sorted(city_dir.iterdir()):
             if src.suffix.lower() not in EXTS:
