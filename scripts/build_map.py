@@ -49,14 +49,23 @@ ROUTES = [
 # offset in SVG units from the city; w, h = drawn size in SVG units.
 LANDMARKS = [
     {"id": "eiffel", "city": "Paris", "file": "assets/landmarks/eiffel.svg",
-     "dx": -48, "dy": 6, "w": 56, "h": 90},
+     "dx": -70, "dy": 6, "w": 56, "h": 90},
     {"id": "lake", "city": "Lausanne", "file": "assets/landmarks/lake.svg",
      "dx": 100, "dy": 60, "w": 112, "h": 70},
     {"id": "church", "city": "Weisendorf", "file": "assets/landmarks/church.svg",
-     "dx": 46, "dy": -6, "w": 54, "h": 72},
+     "dx": 66, "dy": -6, "w": 54, "h": 72},
     {"id": "prague-clock", "city": "Prague", "file": "assets/landmarks/prague-clock.svg",
-     "dx": 52, "dy": 6, "w": 56, "h": 56},
+     "dx": 56, "dy": 6, "w": 46, "h": 78},
 ]
+
+# Small country flags (assets/flags/*.svg), planted at a lat/lon; the pole's foot is the anchor.
+FLAGS = [
+    {"id": "flag-france", "file": "assets/flags/fr.svg", "lat": 47.7, "lon": 3.5},
+    {"id": "flag-switzerland", "file": "assets/flags/ch.svg", "lat": 47.0, "lon": 7.9},
+    {"id": "flag-germany", "file": "assets/flags/de.svg", "lat": 49.2, "lon": 9.4},
+    {"id": "flag-czechia", "file": "assets/flags/cz.svg", "lat": 49.4, "lon": 14.0},
+]
+FLAG_SIZE = (26, 36)  # w, h in SVG units
 
 
 def project(lat, lon):
@@ -244,6 +253,10 @@ def main():
     landmarks = [{"id": m["id"], "city": m["city"], "file": m["file"], "w": m["w"], "h": m["h"],
                   "x": round(cities[m["city"]]["x"] + m["dx"], 1),
                   "y": round(cities[m["city"]]["y"] + m["dy"], 1)} for m in LANDMARKS]
+    for f in FLAGS:
+        x, y = to_svg(f["lat"], f["lon"])
+        landmarks.append({"id": f["id"], "file": f["file"], "w": FLAG_SIZE[0], "h": FLAG_SIZE[1],
+                          "x": round(x, 1), "y": round(y, 1)})
 
     data = {"width": WIDTH, "height": HEIGHT, "km_per_unit": round(1 / SCALE, 3),
             "source": "Natural Earth (public domain), via world-atlas",
