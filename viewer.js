@@ -1,5 +1,6 @@
-// Full-screen photo viewer. TripViewer.create(rootElement) -> { open(city, photos), close(), isOpen() }.
+// Full-screen photo viewer. TripViewer.create(rootElement, texts) -> { open(city, photos), close(), isOpen() }.
 // open() resolves when the viewer is closed again (Back to map button, Escape, or "next" on the last photo).
+// texts() returns the current language's TripTexts entry; `city` is the name to display.
 (function () {
   const SWIPE_PX = 40;
   const FADE_MS = 220;
@@ -7,15 +8,11 @@
   const SLIDE_OUT_MS = 160, SLIDE_IN_MS = 260;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
-  function formatDay(iso) {
-    return new Date(iso).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
-  }
-
-  function create(root) {
+  function create(root, texts) {
     const $ = (sel) => root.querySelector(sel);
     const backBtn = $(".viewer-back"), prevBtn = $(".viewer-nav.prev"), nextBtn = $(".viewer-nav.next");
     const cityEl = $(".viewer-city"), countEl = $(".viewer-count");
-    const stage = $(".viewer-stage"), img = $(".viewer-img"), caption = $(".viewer-caption");
+    const stage = $(".viewer-stage"), img = $(".viewer-img");
 
     let photos = [], city = "", index = 0, resolveClose = null, hideTimer = null;
     let swap = 0; // bumped on every show(), so a newer photo change cancels an older one mid-way
@@ -35,7 +32,8 @@
       const p = photos[index];
       const animate = dir && !reducedMotion.matches;
       prevBtn.disabled = index === 0;
-      nextBtn.setAttribute("aria-label", index === photos.length - 1 ? "Back to map" : "Next photo");
+      const t = texts();
+      nextBtn.setAttribute("aria-label", index === photos.length - 1 ? t.backToMapLabel : t.nextPhoto);
 
       if (animate) {
         await slide({ opacity: getComputedStyle(img).opacity, transform: getComputedStyle(img).transform },
@@ -45,9 +43,8 @@
       img.src = p.src;
       img.width = p.w;
       img.height = p.h;
-      img.alt = `${city}, photo ${index + 1} of ${photos.length}`;
+      img.alt = t.photoAlt(city, index + 1, photos.length);
       countEl.textContent = `${index + 1} / ${photos.length}`;
-      caption.textContent = p.exact ? formatDay(p.taken) : "";
       [index - 1, index + 1].forEach((j) => { if (photos[j]) new Image().src = photos[j].src; });
 
       if (animate) {

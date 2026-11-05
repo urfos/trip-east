@@ -8,36 +8,70 @@
   <link rel="stylesheet" href="characters.css">
   <link rel="stylesheet" href="travel.css">
   <link rel="stylesheet" href="viewer.css">
+  <link rel="stylesheet" href="intro.css">
+  <link rel="preload" href="assets/fonts/UnifrakturMaguntia.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/RuslanDisplay-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
-  <svg id="stage" role="img" aria-label="Map of Europe with the trip route"></svg>
-  <div class="hud" id="hud" aria-live="polite"></div>
-  <div class="credit">Map: Natural Earth</div>
+  <div class="intro" id="intro">
+    <h1 class="intro-title" data-t="title">Going East!</h1>
+    <p class="intro-date" data-t="date">October 2026</p>
+    <!-- Positions are in % of the box: --x = centre, --y = bottom, --h = height. The route's
+         viewBox (760 x 300) has the box's proportions, so its points match the icons' bottoms. -->
+    <div class="intro-icons" aria-hidden="true">
+      <svg class="intro-route" viewBox="0 0 760 300" preserveAspectRatio="none">
+        <path d="M76 186C140 186 200 276 274 276C350 276 400 165 479 165C560 165 600 234 676 234"/>
+      </svg>
+      <img src="assets/landmarks/eiffel.svg" alt="" style="--x: 10; --y: 62; --h: 56">
+      <img src="assets/landmarks/lake.svg" alt="" style="--x: 36; --y: 94; --h: 40">
+      <img src="assets/landmarks/church.svg" alt="" style="--x: 63; --y: 56; --h: 44">
+      <img src="assets/landmarks/prague-clock.svg" alt="" style="--x: 89; --y: 79; --h: 48">
+    </div>
+    <div class="intro-langs" role="group" data-t-aria="chooseLanguage" aria-label="Choose a language">
+      <button class="intro-lang" type="button" data-lang="en" lang="en">English</button>
+      <button class="intro-lang" type="button" data-lang="ru" lang="ru">Русский</button>
+    </div>
+  </div>
 
-  <div class="popup" id="road-photo" role="dialog" aria-label="Photo from the road" hidden>
+  <svg id="stage" role="img" data-t-aria="mapLabel" aria-label="Map of Europe with the trip route"></svg>
+  <div class="hud" id="hud" aria-live="polite"></div>
+  <div class="credit" data-t="credit">Map: Natural Earth</div>
+  <button class="mute" id="mute" type="button" aria-pressed="false" aria-label="Mute music" hidden>
+    <svg class="icon-on" viewBox="0 0 24 24" aria-hidden="true">
+      <path class="fill" d="M3 9h4l5-4v14l-5-4H3z"/>
+      <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>
+    </svg>
+    <svg class="icon-off" viewBox="0 0 24 24" aria-hidden="true">
+      <path class="fill" d="M3 9h4l5-4v14l-5-4H3z"/>
+      <path d="M16 9.5l5 5M21 9.5l-5 5"/>
+    </svg>
+  </button>
+
+  <div class="popup" id="road-photo" role="dialog" data-t-aria="roadPhoto" aria-label="Photo from the road" hidden>
     <figure class="popup-card">
       <img class="popup-img" alt="">
       <figcaption class="popup-caption"></figcaption>
     </figure>
   </div>
 
-  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Photos" hidden>
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" data-t-aria="photos" aria-label="Photos" hidden>
     <header class="viewer-bar">
-      <button class="viewer-back" type="button">&larr; Back to map</button>
+      <button class="viewer-back" type="button" data-t="backToMap">&larr; Back to map</button>
       <div class="viewer-title"><span class="viewer-city"></span><span class="viewer-count"></span></div>
     </header>
     <div class="viewer-stage">
-      <button class="viewer-nav prev" type="button" aria-label="Previous photo">&lsaquo;</button>
+      <button class="viewer-nav prev" type="button" data-t-aria="prevPhoto" aria-label="Previous photo">&lsaquo;</button>
       <img class="viewer-img" alt="">
       <button class="viewer-nav next" type="button" aria-label="Next photo">&rsaquo;</button>
     </div>
-    <p class="viewer-caption"></p>
   </div>
 
+  <script src="texts.js"></script>
   <script src="characters.js"></script>
   <script src="vehicles.js"></script>
   <script src="travel.js"></script>
   <script src="viewer.js"></script>
+  <script src="music.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

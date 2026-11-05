@@ -11,6 +11,7 @@ City names come from map.json (case-insensitive). Photos are ordered by filename
 each chapter; chapters and roads follow the trip order. Files are rotated upright and
 stripped of EXIF/XMP (incl. GPS) in place. Ends by regenerating the public placeholders.
 """
+import hashlib
 import json
 import sys
 from datetime import datetime
@@ -36,7 +37,11 @@ def prepare(path):
         path.write_bytes(clean)
     w, h = jpeg_size(clean)
     when = datetime.strptime(taken, "%Y:%m:%d %H:%M:%S").isoformat() if taken else None
-    return {"src": f"{SRC.name}/{path.name}", "w": w, "h": h, "taken": when, "exact": bool(taken)}
+    # ?v=<content hash>: a file replaced under the same name gets a new URL, so the browser
+    # can't keep showing its cached old picture.
+    version = hashlib.md5(clean).hexdigest()[:8]
+    return {"src": f"{SRC.name}/{path.name}?v={version}", "w": w, "h": h,
+            "taken": when, "exact": bool(taken)}
 
 
 def main():

@@ -1,0 +1,68 @@
+/* Title page shown over the map until the first tap. */
+@font-face {
+  font-family: "UnifrakturMaguntia";
+  src: url("assets/fonts/UnifrakturMaguntia.woff2") format("woff2");
+  font-display: block;
+}
+/* Old Russian display face for the Russian title; the blackletter font has no Cyrillic. */
+@font-face {
+  font-family: "Ruslan Display";
+  src: url("assets/fonts/RuslanDisplay-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  font-display: block;
+}
+@font-face {
+  font-family: "Ruslan Display";
+  src: url("assets/fonts/RuslanDisplay-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F;
+  font-display: block;
+}
+
+.intro {
+  position: fixed; inset: 0; z-index: 12; /* above everything, the mute button included */
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px 16px; text-align: center; user-select: none;
+  color: #704214; /* sepia */
+  background: radial-gradient(ellipse at center, #efe6c8 55%, #e2d5ad 100%); /* the map's land colour */
+  font-family: "UnifrakturMaguntia", serif;
+  transition: opacity .6s ease;
+}
+.intro[hidden] { display: none; }
+.intro.closing { opacity: 0; pointer-events: none; }
+
+.intro-title { margin: 0; font-weight: normal; font-size: clamp(56px, 15vmin, 150px); line-height: 1.05; }
+.intro-date { margin: .2em 0 0; font-size: clamp(28px, 7vmin, 64px); }
+/* Ruslan Display runs wider than the blackletter, so the Russian title is set a little smaller. */
+html[lang="ru"] .intro-title, html[lang="ru"] .intro-date, .intro-lang[lang="ru"] { font-family: "Ruslan Display", serif; }
+html[lang="ru"] .intro-title { font-size: clamp(44px, 12vmin, 120px); }
+html[lang="ru"] .intro-date { font-size: clamp(24px, 6vmin, 54px); }
+
+/* The landmarks sit at different heights along a dashed route, like a small map of the trip.
+   The box keeps a 760:300 ratio so the route's viewBox lines up with the icons. */
+.intro-icons {
+  position: relative; width: min(92vw, 760px, 115vh); aspect-ratio: 760 / 300;
+  margin-top: clamp(12px, 4vmin, 40px);
+}
+.intro-route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.intro-route path {
+  fill: none; stroke: #704214; stroke-width: 3px; stroke-dasharray: 10 8; stroke-linecap: round;
+  vector-effect: non-scaling-stroke; opacity: .8;
+}
+.intro-icons img {
+  position: absolute; left: calc(var(--x) * 1%); top: calc((var(--y) - var(--h)) * 1%);
+  height: calc(var(--h) * 1%); width: auto; transform: translateX(-50%);
+}
+
+/* Language buttons: each is written in its own title font. */
+.intro-langs { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: clamp(24px, 6vmin, 52px); }
+.intro-lang {
+  min-width: 150px; padding: 10px 24px 12px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 26px; line-height: 1.1; color: #704214;
+  background: rgba(255, 250, 235, .55); border: 2px solid #704214;
+  transition: background .15s, color .15s;
+}
+.intro-lang:hover { background: #704214; color: #efe6c8; }
+.intro-lang:focus-visible { outline: 3px solid #b5651d; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .intro, .intro-lang { transition: none; }
+}

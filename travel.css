@@ -27,6 +27,23 @@ html, body { margin: 0; height: 100%; overflow: hidden; font-family: system-ui, 
 @keyframes pulse { 50% { opacity: .55; } }
 @media (prefers-reduced-motion: reduce) { .hud .pulse { animation: none; } }
 
+/* Above the photo viewer too, so the music can be muted while looking at photos. */
+.mute {
+  position: fixed; left: 12px; bottom: max(12px, env(safe-area-inset-bottom)); z-index: 11;
+  width: 44px; height: 44px; padding: 0; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(18, 22, 30, .45); border: 1px solid rgba(255, 255, 255, .45);
+}
+.mute[hidden] { display: none; }
+.mute svg {
+  width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.mute svg .fill { fill: #fff; }
+.mute[aria-pressed="true"] .icon-on, .mute[aria-pressed="false"] .icon-off { display: none; }
+.mute:hover { background: rgba(18, 22, 30, .65); }
+.mute:focus-visible { outline: 3px solid #f6c945; outline-offset: 2px; }
+
 .credit {
   position: fixed; right: 8px; bottom: 4px; font-size: 11px; color: rgba(0, 0, 0, .5);
   pointer-events: none; user-select: none;

@@ -19,10 +19,10 @@
     },
     {
      "src": "photos/lausanne-03.svg",
-     "w": 1008,
-     "h": 756,
-     "taken": "2026-10-20T16:13:28",
-     "exact": true
+     "w": 400,
+     "h": 300,
+     "taken": null,
+     "exact": false
     },
     {
      "src": "photos/lausanne-04.svg",
@@ -40,10 +40,10 @@
     },
     {
      "src": "photos/lausanne-06.svg",
-     "w": 689,
-     "h": 919,
-     "taken": "2026-10-18T17:16:54",
-     "exact": true
+     "w": 299,
+     "h": 400,
+     "taken": null,
+     "exact": false
     },
     {
      "src": "photos/lausanne-07.svg",
@@ -101,27 +101,48 @@
     },
     {
      "src": "photos/weisendorf-06.svg",
-     "w": 300,
-     "h": 400,
+     "w": 259,
+     "h": 337,
      "taken": null,
      "exact": false
     },
     {
      "src": "photos/weisendorf-07.svg",
+     "w": 240,
+     "h": 320,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/weisendorf-08.svg",
      "w": 300,
      "h": 400,
      "taken": null,
      "exact": false
     },
     {
-     "src": "photos/weisendorf-08.svg",
+     "src": "photos/weisendorf-09.svg",
+     "w": 300,
+     "h": 400,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/weisendorf-10.svg",
      "w": 330,
      "h": 227,
      "taken": null,
      "exact": false
     },
     {
-     "src": "photos/weisendorf-09.svg",
+     "src": "photos/weisendorf-11.svg",
+     "w": 400,
+     "h": 300,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/weisendorf-12.svg",
      "w": 300,
      "h": 400,
      "taken": null,
@@ -141,83 +162,111 @@
     },
     {
      "src": "photos/prague-02.svg",
+     "w": 240,
+     "h": 320,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-03.svg",
      "w": 300,
      "h": 400,
      "taken": null,
      "exact": false
     },
     {
-     "src": "photos/prague-03.svg",
+     "src": "photos/prague-04.svg",
+     "w": 320,
+     "h": 180,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-05.svg",
      "w": 400,
      "h": 300,
      "taken": null,
      "exact": false
     },
     {
-     "src": "photos/prague-04.svg",
-     "w": 634,
-     "h": 899,
-     "taken": "2026-10-24T12:54:19",
-     "exact": true
-    },
-    {
-     "src": "photos/prague-05.svg",
-     "w": 881,
-     "h": 661,
-     "taken": "2026-10-24T16:08:20",
-     "exact": true
-    },
-    {
      "src": "photos/prague-06.svg",
-     "w": 400,
-     "h": 300,
+     "w": 282,
+     "h": 400,
      "taken": null,
      "exact": false
     },
     {
      "src": "photos/prague-07.svg",
+     "w": 300,
+     "h": 400,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-08.svg",
+     "w": 400,
+     "h": 300,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-09.svg",
+     "w": 400,
+     "h": 300,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-10.svg",
      "w": 400,
      "h": 316,
      "taken": null,
      "exact": false
     },
     {
-     "src": "photos/prague-08.svg",
-     "w": 710,
-     "h": 532,
-     "taken": "2026-10-24T18:08:07",
-     "exact": true
-    },
-    {
-     "src": "photos/prague-09.svg",
-     "w": 300,
-     "h": 400,
-     "taken": null,
-     "exact": false
-    },
-    {
-     "src": "photos/prague-10.svg",
-     "w": 300,
-     "h": 400,
-     "taken": null,
-     "exact": false
-    },
-    {
      "src": "photos/prague-11.svg",
-     "w": 566,
-     "h": 894,
-     "taken": "2026-10-25T18:04:01",
-     "exact": true
-    },
-    {
-     "src": "photos/prague-12.svg",
      "w": 400,
      "h": 300,
      "taken": null,
      "exact": false
     },
     {
+     "src": "photos/prague-12.svg",
+     "w": 300,
+     "h": 400,
+     "taken": null,
+     "exact": false
+    },
+    {
      "src": "photos/prague-13.svg",
+     "w": 300,
+     "h": 400,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-14.svg",
+     "w": 300,
+     "h": 400,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-15.svg",
+     "w": 253,
+     "h": 400,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-16.svg",
+     "w": 400,
+     "h": 300,
+     "taken": null,
+     "exact": false
+    },
+    {
+     "src": "photos/prague-17.svg",
      "w": 400,
      "h": 300,
      "taken": null,

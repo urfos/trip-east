@@ -9,8 +9,8 @@
     ["ilya", "masha", "iero", "lada"],
   ];
   const MAX_TILT = 70;        // degrees; the vehicles climb steep stretches but never go sideways
-  const SPEED = 60;           // map units per second (clamped by MIN/MAX_SECONDS)
-  const MIN_SECONDS = 4.5, MAX_SECONDS = 12;
+  const SPEED = 40;           // map units per second (clamped by MIN/MAX_SECONDS)
+  const MIN_SECONDS = 6.75, MAX_SECONDS = 18;
   const CAMERA_LIFT = 0.09;   // share of the view width: the camera looks slightly above the vehicle
   const WINDOW_LIFT = 26;     // height of the passenger windows above the road, in map units
   const DEPART_EASE = 0.15;   // share of the leg over which the departure close-up eases out
@@ -208,8 +208,9 @@
     }
 
     // Drives the active vehicle along the leg; resolves on arrival. With `midway` (an async
-    // function) the vehicle eases to a stop halfway, waits for it, then drives on.
-    function travelLeg(leg, midway) {
+    // function) the vehicle eases to a stop at share `stopAt` of the route, waits for it,
+    // then drives on.
+    function travelLeg(leg, midway, stopAt = 0.5) {
       show(leg);
       const seconds = clamp(routes[leg].length / SPEED, MIN_SECONDS, MAX_SECONDS);
       const drive = (from, to, secs) => new Promise((resolve) => {
@@ -223,13 +224,19 @@
         requestAnimationFrame(step);
       });
       if (!midway) return drive(0, 1, seconds);
-      return drive(0, 0.5, seconds / 2).then(midway).then(() => drive(0.5, 1, seconds / 2));
+      return drive(0, stopAt, seconds * stopAt).then(midway)
+        .then(() => drive(stopAt, 1, seconds * (1 - stopAt)));
     }
 
     const ready = Promise.all(vehicles.map((v) => v.ready));
     show(0, { snap: true });
     requestAnimationFrame(frame);
-    return { cities: names, legCount: routes.length, show, setState, setCamera, travelLeg, ready };
+    // Renames the city labels on the map: label(englishName) -> text to show.
+    function setLabels(label) {
+      markers.forEach((m, i) => { m.label.textContent = label(names[i]); });
+    }
+
+    return { cities: names, legCount: routes.length, show, setState, setCamera, travelLeg, setLabels, ready };
   }
 
   window.TripTravel = { createTravel };
